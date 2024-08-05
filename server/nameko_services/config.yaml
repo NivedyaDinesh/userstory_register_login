@@ -1,0 +1,3 @@
+AMQP_URI: pyamqp://guest:guest@localhost
+MONGO_URI: mongodb://localhost:27017
+MONGODB_DATABASE: questdatabase
