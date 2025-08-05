@@ -1,4 +1,4 @@
-# 🔐 Auth Microservice System / # userstory_register_login
+# 🔐 Auth Microservice System
 
 A lightweight microservice-based authentication system using **Nameko**, **Flask**, and **MongoDB**. It allows users to sign up and log in securely with hashed passwords.
 
