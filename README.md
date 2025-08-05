@@ -112,7 +112,7 @@ Logs in an existing user.
 
 ## 📊 Documentation
 
-See `api_documentation.ods` for detailed API schema and example calls.
+See `api_documentation.png` for detailed API schema and example calls.
 
 ---
 
