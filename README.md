@@ -1,114 +1,116 @@
-# 🔐 Auth Microservice System
+# 🔐 Microservice-Based Authentication System
 
 A lightweight microservice-based authentication system using **Nameko**, **Flask**, and **MongoDB**. It allows users to sign up and log in securely with hashed passwords.
 
----
-
-## 📦 Tech Stack
-
-- **Nameko** – Microservices framework (RabbitMQ-based RPC)
-- **Flask** – API gateway
-- **MongoDB** – Database
-- **bcrypt** – Password hashing
-- **dotenv** – Environment variable management
 
 ---
 
-## 📁 Project Structure
+## 🗂️ Project Structure
 
 ```
-.
-├── app.py                  # Flask application with CORS and routing
-├── authorization.py       # Flask blueprint calling Nameko RPC
-├── auth_service.py        # Nameko service for auth logic
-├── main.py                # Entry point for running Nameko service
-├── mongodbsingleton.py    # Singleton MongoDB connector
-├── config.yaml            # Environment configuration
-└── api_documentation.ods  # API documentation (spreadsheet format)
+server/
+├── api_services/
+│   ├── app.py                           # Flask entry point
+│   └── authorization/
+│       └── authorization.py            # Flask Blueprint routes
+│
+├── nameko_services/
+│   ├── config.yaml                     # Nameko config (AMQP)
+│   ├── main.py                         # Nameko runner
+│   ├── mongodbsingleton.py            # MongoDB singleton connection
+│   └── auth_service/
+│       └── auth_service.py            # Nameko RPC-based Auth logic
+│
+└── .env                                # Environment variables (Mongo, AMQP)
 ```
 
 ---
 
-## ⚙️ Setup Instructions
+## ⚙️ Technologies Used
 
-### 1. 🐍 Create virtual environment
+- Python 3.8+
+- Flask
+- Nameko (microservices framework)
+- MongoDB
+- RabbitMQ (AMQP transport)
+- bcrypt (for password hashing)
+- python-dotenv
 
-```bash
-python3 -m venv venv
-source venv/bin/activate
-```
+---
 
-### 2. 📥 Install dependencies
+## 📦 Installation
+
+### 1. Install Dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-(*Make sure your `requirements.txt` includes: nameko, flask, flask-cors, pymongo, python-dotenv, bcrypt*)
+### 2. Setup Environment
 
-### 3. 🐇 Install and run RabbitMQ
+Create a `.env` file in the `server/` folder with:
 
-Install RabbitMQ and start it (usually runs on port `5672`).
-
-### 4. 🗄️ MongoDB setup
-
-Ensure MongoDB is running locally or update `MONGO_URI` in `.env` or `config.yaml`.
-
-### 5. 🧪 Create `.env` file
-
-```dotenv
-AMQP_URI=pyamqp://guest:guest@localhost
-MONGO_URI=mongodb://localhost:27017
+```env
+MONGO_URI=mongodb://localhost:27017/
 MONGODB_DATABASE=questdatabase
+AMQP_URI=pyamqp://guest:guest@localhost
 ```
+
+Make sure both MongoDB and RabbitMQ are running locally.
 
 ---
 
-## 🚀 Running the Services
+## 🚀 Running the Application
 
-### Start the Flask API Gateway
+### 1. Start Nameko Auth Service
 
 ```bash
-python app.py
+cd server/nameko_services
+python main.py
 ```
 
-### Start the Nameko Auth Service
+> Ensure `config.yaml` exists and contains:
+> ```yaml
+> AMQP_URI: "pyamqp://guest:guest@localhost"
+> ```
+
+### 2. Start Flask API Gateway
 
 ```bash
-nameko run main --config config.yaml
+cd server/api_services
+python app.py
 ```
 
 ---
 
 ## 📡 API Endpoints
 
-### POST `/sign-up`
-
-Registers a new user.
-
-**Body:**
-```json
-{
-  "username": "yourusername",
-  "password": "yourpassword"
-}
-```
+| Method | Endpoint    | Description         |
+|--------|-------------|---------------------|
+| POST   | `/sign-up`  | Register a new user |
+| POST   | `/log-in`   | Authenticate user   |
 
 ---
 
-### GET `/log-in`
+## 🔐 Sample Requests
 
-Logs in an existing user.
+### Sign Up
 
-**Body:**
-```json
-{
-  "username": "yourusername",
-  "password": "yourpassword"
-}
+```bash
+curl -X POST http://localhost:5000/sign-up \
+  -H "Content-Type: application/json" \
+  -d '{"username": "user1", "password": "secret"}'
 ```
 
----
+### Log In
+
+```bash
+curl -X POST http://localhost:5000/log-in \
+  -H "Content-Type: application/json" \
+  -d '{"username": "user1", "password": "secret"}'
+```
+
+
 
 ## 📊 Documentation
 
@@ -120,4 +122,3 @@ See `api_documentation.png` for detailed API schema and example calls.
 
 - Passwords are hashed using `bcrypt`.
 - CORS is open (`*`) – adjust for production use.
-
